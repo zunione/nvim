@@ -17,6 +17,11 @@ local remap_silent_opt = { remap = true, silent = true }
 local noremap_opt = { noremap = true }
 local noremap_silent_opt = { noremap = true, silent = true }
 
+
+
+-- ========================= --
+-- =   GLOBAL FUNCTIONS    =
+-- ========================= --
 local t = function(str)
   return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
@@ -29,6 +34,20 @@ function _G.sync_to()
   vim.api.nvim_feedkeys(t('<CR>'), 'n', true)
 end
 
+-- Function for file tree toggle
+function _G.toggle_neotree()
+  local manager = require("neo-tree.sources.manager")
+  local state = manager.get_state("filesystem")
+
+  if state.winid and vim.api.nvim_win_is_valid(state.winid) then
+    require('neo-tree.command').execute({ action = "close" })
+  else
+    require('neo-tree.command').execute({ action = "focus", source = "filesystem" })
+  end
+end
+
+
+
 -- ========================= --
 -- =      LEADER KEY       =
 -- ========================= --
@@ -38,6 +57,8 @@ vim.g.maplocalleader = ' '
 -- Disable the spacebar key's default behavior in Normal and Visual modes
 -- 변수 순서: 모드, 설정할 키맵, 실행할 명령, 옵션
 keyset({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
+
+
 
 -- ========================= --
 -- =      NORMAL MODE      =
@@ -52,7 +73,7 @@ keyset('n', 'fb',     '<CMD>Telescope buffers<CR>', noremap_opt)
 keyset('n', 'dt',     '<CMD>lua vim.diagnostic.config({virtual_text = not vim.diagnostic.config().virtual_text})<CR>', noremap_opt)
 keyset('n', 'dd',     '"_dd', noremap_opt)
 
--- VSCode와 유사한 키매핑
+-- Key mappings similar to VSCode
 keyset('n', '<C-Q>',  '<CMD>qa<CR>', noremap_opt)
 keyset('n', '<C-W>',  '<CMD>q<CR>', noremap_opt)
 keyset('n', '<C-A>',  'gg<S-V>G', noremap_opt)
@@ -63,42 +84,21 @@ keyset('n', '<C-Z>',  'u', noremap_opt)
 keyset('n', '<C-X>',  'dd', noremap_opt)
 keyset('n', '<C-C>',  'yy', noremap_opt)
 keyset('n', '<C-V>',  'p', noremap_opt)
-keyset('n', '<C-B>', function()
-  local manager = require("neo-tree.sources.manager")
-  local state = manager.get_state("filesystem")
+keyset('n', '<C-B>',  '<CMD>lua toggle_neotree()<CR>', noremap_opt)
+keyset('n', '<C-_>',  'gcc', remap_opt)
 
-  if state.winid and vim.api.nvim_win_is_valid(state.winid) then
-    -- Neotree가 열려있으면 닫기
-    require('neo-tree.command').execute({ action = "close" })
-  else
-    -- Neotree가 닫혀있으면 열고 포커스
-    require('neo-tree.command').execute({ action = "focus", source = "filesystem" })
-  end
-end, noremap_opt)
+-- Barbar plugin: Use function keys for changing buffers
+keyset('n', '<F1>',      '<CMD>BufferGoto1<CR>', noremap_silent_opt)
+keyset('n', '<F2>',      '<CMD>BufferGoto2<CR>', noremap_silent_opt)
+keyset('n', '<F3>',      '<CMD>BufferGoto3<CR>', noremap_silent_opt)
+keyset('n', '<F4>',      '<CMD>BufferGoto4<CR>', noremap_silent_opt)
+keyset('n', '<F5>',      '<CMD>BufferGoto5<CR>', noremap_silent_opt)
+keyset('n', '<F6>',      '<CMD>BufferGoto6<CR>', noremap_silent_opt)
+keyset('n', '<F7>',      '<CMD>BufferGoto7<CR>', noremap_silent_opt)
+keyset('n', '<F8>',      '<CMD>BufferGoto8<CR>', noremap_silent_opt)
+keyset('n', '<F9>',      '<CMD>BufferGoto9<CR>', noremap_silent_opt)
+keyset('n', '<F10>',      '<CMD>BufferLast<CR>', noremap_silent_opt)
 
--- 숫자 키를 버퍼 탭 전환에 사용 (Barbar 플러그인)
-keyset('n', '1',      '<CMD>BufferGoto1<CR>', noremap_silent_opt)
-keyset('n', '2',      '<CMD>BufferGoto2<CR>', noremap_silent_opt)
-keyset('n', '3',      '<CMD>BufferGoto3<CR>', noremap_silent_opt)
-keyset('n', '4',      '<CMD>BufferGoto4<CR>', noremap_silent_opt)
-keyset('n', '5',      '<CMD>BufferGoto5<CR>', noremap_silent_opt)
-keyset('n', '6',      '<CMD>BufferGoto6<CR>', noremap_silent_opt)
-keyset('n', '7',      '<CMD>BufferGoto7<CR>', noremap_silent_opt)
-keyset('n', '8',      '<CMD>BufferGoto8<CR>', noremap_silent_opt)
-keyset('n', '9',      '<CMD>BufferGoto9<CR>', noremap_silent_opt)
-keyset('n', '0',      '<CMD>BufferLast<CR>', noremap_silent_opt)
-
--- 문제 해결: 실제 숫자를 입력해야 할 때는 Ctrl+숫자
-keyset('n', '<C-1>',  '1', noremap_opt)
-keyset('n', '<C-2>',  '2', noremap_opt)
-keyset('n', '<C-3>',  '3', noremap_opt)
-keyset('n', '<C-4>',  '4', noremap_opt)
-keyset('n', '<C-5>',  '5', noremap_opt)
-keyset('n', '<C-6>',  '6', noremap_opt)
-keyset('n', '<C-7>',  '7', noremap_opt)
-keyset('n', '<C-8>',  '8', noremap_opt)
-keyset('n', '<C-9>',  '9', noremap_opt)
-keyset('n', '<C-0>',  '0', noremap_opt)
 
 
 -- ========================= --
@@ -113,9 +113,12 @@ keyset('i', '<C-Y>',  '<ESC><ESC><C-R>a', noremap_opt)
 keyset('i', '<C-Z>',  '<ESC><ESC>ua', noremap_opt)
 keyset('i', '<C-X>',  '<ESC><ESC>dda', noremap_opt)
 keyset('i', '<C-C>',  '<ESC><ESC>yya', noremap_opt)
-keyset('i', '<C-B>',  '<ESC><ESC>pi', noremap_opt)
+keyset('i', '<C-V>',  '<C-R>"', noremap_opt)
+keyset('i', '<C-B>',  '<CMD>lua toggle_neotree()<CR>', noremap_opt)
 keyset('i', '<C-L>',  '<C-V>', noremap_opt)
 keyset('i', '<S-TAB>','<C-V><TAB>', noremap_opt)
+keyset('i', '<C-_>',  '<ESC><ESC>gcca', remap_opt)
+
 
 
 -- ========================= --
@@ -130,10 +133,12 @@ keyset('v', '<C-S>',  '<ESC><ESC>:w<CR>', noremap_opt)
 keyset('v', '<C-Y>',  '<ESC><ESC><C-R>', noremap_opt)
 keyset('v', '<C-R>',  '<C-Y>', noremap_opt)
 keyset('v', '<C-Z>',  '<ESC><ESC>u', noremap_opt)
---keyset('v', '<C-X>',  '<CMD>lua visual_do("cut")<CR>', noremap_opt)
---keyset('v', '<C-C>',  '<CMD>lua visual_do("copy")<CR>', noremap_opt)
-keyset('v', '<C-B>',  'p', noremap_opt)
-keyset('v', 'v',      '<C-V>', noremap_opt)
+keyset('v', '<C-X>',  'd', noremap_opt)
+keyset('v', '<C-C>',  'y', noremap_opt)
+keyset('v', '<C-V>',  'p', noremap_opt)
+keyset('v', '<C-B>',  '<CMD>lua toggle_neotree()<CR>', noremap_opt)
+keyset('v', '<C-_>',  'gc', remap_opt)
+
 
 
 -- ========================= --
