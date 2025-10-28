@@ -2,12 +2,12 @@
 vim.o.mouse = 'a'
 
 -- Make line numbers default (default: false)
-vim.wo.number = true 
+vim.wo.number = true
 -- Set relative numbered lines (default: false)
-vim.o.relativenumber = true 
+vim.o.relativenumber = true
 
 -- Keep signcolumn on by default
-vim.o.signcolumn = 'yes' 
+vim.o.signcolumn = 'yes'
 
 -- Sync clipboard between OS and Neovim (default: '')
 vim.o.clipboard = 'unnamedplus'
@@ -42,19 +42,29 @@ vim.o.expandtab = true
 vim.o.showtabline = 1
 
 -- Save undo history
-vim.o.undofile = true 
+vim.o.undofile = true
 
 -- the encoding written to a file
 vim.o.fileencoding = 'utf-8'
 
 -- set termguicolors to enable highlight groups
-vim.opt.termguicolors = true 
+vim.opt.termguicolors = true
 
 -- don't insert the current comment leader automatically
-vim.opt.formatoptions:remove { 'c', 'r', 'o' } 
+vim.opt.formatoptions:remove { 'c', 'r', 'o' }
 
 -- separate vim plugins from neovim
-vim.opt.runtimepath:remove '/usr/share/vim/vimfiles' 
+vim.opt.runtimepath:remove '/usr/share/vim/vimfiles'
 
 -- allow backspace on
-vim.o.backspace = 'eol,start' 
+vim.o.backspace = 'eol,start'
+
+-- 파일 타입별 인덴트 설정
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = {"lua", "dart", "javascript", "typescript", "typescriptreact", "javascriptreact"},
+  callback = function()
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.tabstop = 2
+    vim.opt_local.softtabstop = 2
+  end,
+})
