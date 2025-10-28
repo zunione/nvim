@@ -42,8 +42,8 @@ keyset({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 -- ========================= --
 -- =      NORMAL MODE      =
 -- ========================= --
-keyset('n', 'fq',     'h:q<CR>', noremap_opt)
-keyset('n', 'fs',     '<CMD>Gitsigns diffthis<CR>l', noremap_opt)
+keyset('n', 'fq',     'h:q<CR>', noremap_opt)
+keyset('n', 'fs',     '<CMD>Gitsigns diffthis<CR>l', noremap_opt)
 keyset('n', 'fd',     '<CMD>Gitsigns preview_hunk<CR>', noremap_opt)
 keyset('n', 'ff',     '<CMD>Telescope find_files<CR>', noremap_opt)
 keyset('n', 'fg',     '<CMD>Telescope live_grep<CR>', noremap_opt)
@@ -53,15 +53,28 @@ keyset('n', 'dt',     '<CMD>lua vim.diagnostic.config({virtual_text = not vim.di
 keyset('n', 'dd',     '"_dd', noremap_opt)
 
 -- VSCode와 유사한 키매핑
+keyset('n', '<C-Q>',  '<CMD>qa<CR>', noremap_opt)
+keyset('n', '<C-W>',  '<CMD>q<CR>', noremap_opt)
 keyset('n', '<C-A>',  'gg<S-V>G', noremap_opt)
-keyset('n', '<C-S>',  '<cmd>noautocmd w<CR>', noremap_opt) -- save file without auto-formatting
+keyset('n', '<C-S>',  '<CMD>noautocmd w<CR>', noremap_opt) -- save file without auto-formatting
 keyset('n', '<C-Y>',  '<C-R>', noremap_opt)
 keyset('n', '<C-R>',  '<C-Y>', noremap_opt)
 keyset('n', '<C-Z>',  'u', noremap_opt)
 keyset('n', '<C-X>',  'dd', noremap_opt)
 keyset('n', '<C-C>',  'yy', noremap_opt)
 keyset('n', '<C-V>',  'p', noremap_opt)
-keyset('n', '<C-B>',  '<CMD>Neotree<CR>', noremap_opt)
+keyset('n', '<C-B>', function()
+  local manager = require("neo-tree.sources.manager")
+  local state = manager.get_state("filesystem")
+
+  if state.winid and vim.api.nvim_win_is_valid(state.winid) then
+    -- Neotree가 열려있으면 닫기
+    require('neo-tree.command').execute({ action = "close" })
+  else
+    -- Neotree가 닫혀있으면 열고 포커스
+    require('neo-tree.command').execute({ action = "focus", source = "filesystem" })
+  end
+end, noremap_opt)
 
 -- 숫자 키를 버퍼 탭 전환에 사용 (Barbar 플러그인)
 keyset('n', '1',      '<CMD>BufferGoto1<CR>', noremap_silent_opt)
@@ -91,7 +104,7 @@ keyset('n', '<C-0>',  '0', noremap_opt)
 -- ========================= --
 -- =      INSERT MODE      =
 -- ========================= --
---keyset('i', '',     '<ESC><ESC>vbdi', noremap_opt) -- for wsl (window terminal)
+--keyset('i', ',     '<ESC><ESC>vbdi', noremap_opt) -- for wsl (window terminal)
 --keyset('i', '<C-BS>', '<ESC><ESC>vbdi', noremap_opt) -- for mac
 --keyset('i', '<M-BS>', '<ESC><ESC>vbdi', noremap_opt) -- for linux
 keyset('i', '<C-A>',  '<ESC><ESC>gg<S-V>G', noremap_opt)
