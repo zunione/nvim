@@ -1,10 +1,10 @@
 --[[
 -   NOTE      - keymaps.lua
--   Author    - Aru
+-   Author    - zunione
 -
--   Created   - 2022.10.27
--   Github    - https://github.com/aruyu
--   Contact   - vine9151@gmail.com
+-   Created   - 2025.10.28
+-   Github    - https://github.com/zunione
+-   Contact   - xt.wish1@gmail.com
 ]]
 
 
