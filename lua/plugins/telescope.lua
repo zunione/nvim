@@ -50,10 +50,23 @@ return {
       --
       -- defaults = {
       --   mappings = {
-      --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+      --i = { ['<c-enter>'] = 'to_fuzzy_refine' },
       --   },
       -- },
-      -- pickers = {}
+      pickers = {
+        find_files = {
+          file_ignore_patterns = { 'node_modules', '.git', '.venv' },
+          hidden = true,
+        },
+      },
+
+      live_grep = {
+        file_ignore_patterns = { 'node_modules', '.git', '.venv' },
+        additional_args = function(_)
+          return { '--hidden' }
+        end,
+      },
+
       extensions = {
         ['ui-select'] = {
           require('telescope.themes').get_dropdown(),
@@ -67,24 +80,21 @@ return {
 
     -- See `:help telescope.builtin`
     local builtin = require 'telescope.builtin'
-    vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-    vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-    vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-    vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-    vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-    vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-    vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-    vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-    vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-    vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+    vim.keymap.set('n', 'fw', builtin.grep_string, { desc = ':Telescope grep_string' })
+    vim.keymap.set('n', 'fd', builtin.diagnostics, { desc = ':Telescope diagnostics' })
+    vim.keymap.set('n', 'ff', builtin.find_files,  { desc = ':Telescope find_files' })
+    vim.keymap.set('n', 'fg', builtin.live_grep,   { desc = ':Telescope live_grep' })
+    vim.keymap.set('n', 'fh', builtin.help_tags,   { desc = ':Telescope help_tags' })
+    vim.keymap.set('n', 'fk', builtin.keymaps,     { desc = ':Telescope keymaps' })
+    vim.keymap.set('n', 'fb', builtin.buffers,     { desc = ':Telescope buffers' })
 
     -- Slightly advanced example of overriding default behavior and theme
     vim.keymap.set('n', '<leader>/', function()
-    -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-    builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-      winblend = 10,
-      previewer = false,
-    })
+      -- You can pass additional configuration to Telescope to change the theme, layout, etc.
+      builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+        winblend = 10,
+        previewer = false,
+      })
     end, { desc = '[/] Fuzzily search in current buffer' })
 
     -- It's also possible to pass additional configuration options.
