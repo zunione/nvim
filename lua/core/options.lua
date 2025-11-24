@@ -14,7 +14,7 @@
 -- ========================= --
 vim.o.mouse = 'a'                   -- Enable mouse mode (default: '')
 vim.wo.number = true                -- Make line numbers default (default: false)
-vim.o.relativenumber = true         -- Set relative numbered lines (default: false)
+-- vim.o.relativenumber = true         -- Set relative numbered lines (default: false)
 
 vim.o.cursorline = true                       -- Highlight current line
 vim.api.nvim_create_autocmd("ColorScheme", {  -- Set colors for cursorline highlight
